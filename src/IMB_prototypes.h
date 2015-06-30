@@ -66,6 +66,9 @@ void IMB_allgatherv(struct comm_info* c_info, int size, struct iter_schedule* IT
 void IMB_gather(struct comm_info* c_info, int size, struct iter_schedule* ITERATIONS,
                 MODES RUN_MODE, double* time);
 
+void IMB_shr_spmd_gather(struct comm_info* c_info, int size, struct iter_schedule* ITERATIONS,
+                MODES RUN_MODE, double* time);
+
 void IMB_gatherv(struct comm_info* c_info, int size, struct iter_schedule* ITERATIONS,
                  MODES RUN_MODE, double* time);
 
@@ -107,6 +110,7 @@ void IMB_reduce_scatter(struct comm_info* c_info, int size, struct iter_schedule
 
 void IMB_sendrecv(struct comm_info* c_info, int size, struct iter_schedule* ITERATIONS, 
                   MODES RUN_MODE, double* time);
+
 
 #endif // MPI1
 
