@@ -72,6 +72,9 @@ void IMB_shr_spmd_gather(struct comm_info* c_info, int size, struct iter_schedul
 void IMB_gatherv(struct comm_info* c_info, int size, struct iter_schedule* ITERATIONS,
                  MODES RUN_MODE, double* time);
 
+void IMB_shr_spmd_gatherv(struct comm_info* c_info, int size, struct iter_schedule* ITERATIONS,
+                 MODES RUN_MODE, double* time);
+
 void IMB_scatter(struct comm_info* c_info, int size, struct iter_schedule* ITERATIONS,
                  MODES RUN_MODE, double* time);
 

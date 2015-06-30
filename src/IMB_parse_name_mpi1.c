@@ -298,6 +298,13 @@ In/out variables:
 	type = Collective;
 	Bmark->bench_comments = &Gatherv_cmt[0];
     }
+    else if (!strcmp(Bmark->name,"spmd_gatherv"))
+    { 
+	strcpy(Bmark->name,"spmd_Gatherv");
+	Bmark->Benchmark = IMB_shr_spmd_gatherv;
+	type = Collective;
+	Bmark->bench_comments = &Gatherv_cmt[0];
+    }
     else if (!strcmp(Bmark->name,"scatter"))
     { 
 	strcpy(Bmark->name,"Scatter");

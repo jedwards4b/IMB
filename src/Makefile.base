@@ -7,12 +7,12 @@ PROFLIB     =
 
 SRC1 = IMB.c IMB_declare.c  IMB_init.c IMB_mem_manager.c IMB_parse_name_mpi1.c  IMB_benchlist.c IMB_strgs.c \
 IMB_err_handler.c IMB_g_info.c  IMB_warm_up.c IMB_output.c \
-IMB_pingpong.c IMB_pingping.c IMB_allreduce.c IMB_reduce_scatter.c IMB_reduce.c IMB_exchange.c IMB_bcast.c IMB_barrier.c IMB_allgather.c IMB_allgatherv.c IMB_gather.c IMB_gatherv.c IMB_scatter.c IMB_scatterv.c IMB_alltoall.c IMB_alltoallv.c IMB_sendrecv.c IMB_init_transfer.c IMB_chk_diff.c IMB_cpu_exploit.c shr_spmd.c IMB_shr_spmd_gather.c
+IMB_pingpong.c IMB_pingping.c IMB_allreduce.c IMB_reduce_scatter.c IMB_reduce.c IMB_exchange.c IMB_bcast.c IMB_barrier.c IMB_allgather.c IMB_allgatherv.c IMB_gather.c IMB_gatherv.c IMB_scatter.c IMB_scatterv.c IMB_alltoall.c IMB_alltoallv.c IMB_sendrecv.c IMB_init_transfer.c IMB_chk_diff.c IMB_cpu_exploit.c shr_spmd.c IMB_shr_spmd_gather.c IMB_shr_spmd_gatherv.c
 
 
 OBJ1 = IMB.o IMB_declare.o  IMB_init.o IMB_mem_manager.o IMB_parse_name_mpi1.o  IMB_benchlist.o IMB_strgs.o \
 IMB_err_handler.o IMB_g_info.o  IMB_warm_up.o IMB_output.o \
-IMB_pingpong.o IMB_pingping.o IMB_allreduce.o IMB_reduce_scatter.o IMB_reduce.o IMB_exchange.o IMB_bcast.o IMB_barrier.o IMB_allgather.o IMB_allgatherv.o IMB_gather.o IMB_gatherv.o IMB_scatter.o IMB_scatterv.o IMB_alltoall.o IMB_alltoallv.o IMB_sendrecv.o IMB_init_transfer.o  IMB_chk_diff.o IMB_cpu_exploit.o shr_spmd.o IMB_shr_spmd_gather.o
+IMB_pingpong.o IMB_pingping.o IMB_allreduce.o IMB_reduce_scatter.o IMB_reduce.o IMB_exchange.o IMB_bcast.o IMB_barrier.o IMB_allgather.o IMB_allgatherv.o IMB_gather.o IMB_gatherv.o IMB_scatter.o IMB_scatterv.o IMB_alltoall.o IMB_alltoallv.o IMB_sendrecv.o IMB_init_transfer.o  IMB_chk_diff.o IMB_cpu_exploit.o shr_spmd.o IMB_shr_spmd_gather.o IMB_shr_spmd_gatherv.o
 
 
 SRCEXT = IMB.c IMB_declare.c  IMB_init.c  IMB_mem_manager.c IMB_benchlist.c IMB_parse_name_ext.c IMB_strgs.c \
