@@ -554,6 +554,7 @@ static int has_root(const char* bname)
     return bname &&
 #if defined MPI1
            (!strcmp(bname,"Gather")   ||
+            !strcmp(bname,"spmd_Gather")  ||
             !strcmp(bname,"Gatherv")  ||
             !strcmp(bname,"Scatter")  ||
             !strcmp(bname,"Scatterv") ||
@@ -685,7 +686,8 @@ In/out variables:
     else if (
 #ifdef MPI1
                 !strcmp(Bmark->name, "Allgather")   || !strcmp(Bmark->name, "Allgatherv")
-             || !strcmp(Bmark->name, "Gather")      || !strcmp(Bmark->name, "Gatherv")
+             || !strcmp(Bmark->name, "Gather")      || !strcmp(Bmark->name, "Gatherv") 
+             || !strcmp(Bmark->name, "spmd_Gather") 
 #elif defined NBC
                 !strcmp(Bmark->name, "Iallgather")  || !strcmp(Bmark->name, "Iallgather_pure")
              || !strcmp(Bmark->name, "Iallgatherv") || !strcmp(Bmark->name, "Iallgatherv_pure")

@@ -268,7 +268,7 @@ int shr_spmd_gather( void *sendbuf, const int sendcnt, const MPI_Datatype sendty
 		   void *recvbuf, const int recvcnt, const MPI_Datatype recvtype, const int root, 
 		   const MPI_Comm comm, const int flow_cntl)
 {
-  bool fc_gather;
+
   int gather_block_size;
   int mytask, nprocs;
   int mtag;
@@ -278,17 +278,10 @@ int shr_spmd_gather( void *sendbuf, const int sendcnt, const MPI_Datatype sendty
   int displs;
   int dsize;
   
-
-
   if(flow_cntl > 0){
-    fc_gather = true;
-    gather_block_size = min(flow_cntl,MAX_GATHER_BLOCK_SIZE);
-  }else{
-    fc_gather = false;
-  }
-  //  printf("line %d flow_cntl=%d %x %x\n",__LINE__,flow_cntl, sendbuf, recvbuf);
 
-  if(fc_gather){
+    gather_block_size = min(flow_cntl,MAX_GATHER_BLOCK_SIZE);
+
     shr_spmd_CheckMPIReturn(MPI_Comm_rank (comm, &mytask), __FILE__,__LINE__);
     shr_spmd_CheckMPIReturn(MPI_Comm_size (comm, &nprocs), __FILE__,__LINE__);
 
@@ -518,7 +511,7 @@ int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype s
 
   int maxsend=0;
   int maxrecv=0;
-
+  int i;
   shr_spmd_CheckMPIReturn(MPI_Comm_size(comm, &nprocs),__FILE__,__LINE__);
   shr_spmd_CheckMPIReturn(MPI_Comm_rank(comm, &mytask),__FILE__,__LINE__);
 
@@ -526,7 +519,7 @@ int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype s
 #ifdef DEBUG
     int totalrecv=0;
     int totalsend=0;
-    for(int i=0;i<nprocs;i++){
+    for( i=0;i<nprocs;i++){
       //      printf("%d sndlths %d %d %d %d\n",i,sndlths[i],sdispls[i],rcvlths[i],rdispls[i]);
       totalsend+=sndlths[i];
       totalrecv+=rcvlths[i];
@@ -546,7 +539,6 @@ int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype s
   int istep;
   int rstep;
   int p;
-  int i;
   int maxreq;
   int maxreqh;
   int hs;
