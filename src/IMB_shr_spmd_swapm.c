@@ -73,6 +73,36 @@ For more documentation than found here, see
 #include "IMB_benchmark.h"
 
 #include "IMB_prototypes.h"
+#include <stdbool.h>
+
+void shr_swapm_getenv(bool *handshake, bool *isend,int  *maxreqs)
+{
+  char *envptr;
+
+  *handshake = false;
+  *isend = false;
+  *maxreqs=0;
+
+  envptr = getenv("SPMD_SWAPM");
+  if(envptr != NULL){
+    char *token = strtok(envptr, ":");
+    
+    *maxreqs = atoi(token);
+    
+    token = strtok(NULL, ":");
+    
+    if((token!=NULL) && strcmp(token,"t")==0){
+      *handshake = true;
+    }
+    token = strtok(NULL, ":");
+    
+    if((token!=NULL) && strcmp(token,"t")==0){
+      *isend = true;
+    }
+    
+  }
+}
+
 
 #ifdef MPI1
 
@@ -134,10 +164,28 @@ Output variables:
     int 	s_num, r_num;
     MPI_Datatype s_data_types[c_info->num_procs];
     MPI_Datatype r_data_types[c_info->num_procs];
+
+    static bool handshake, isend, firstpass=true;
+    static int maxreqs;
+
+    int flow_cntl;
 #ifdef CHECK
     defect=0.;
 #endif
     ierr = 0;
+
+    if(firstpass){
+      firstpass = false;
+      shr_swapm_getenv(&handshake, &isend, &maxreqs);
+    }
+    if(maxreqs >= 0){
+      flow_cntl = min(c_info->num_procs, maxreqs);
+    }else{
+      flow_cntl = max(2,-1* c_info->num_procs/maxreqs);
+    }
+    if(c_info->rank==0){
+      printf("SPMD_SWAPM: handshake %d isend %d flow_cntl = %d\n",handshake, isend,flow_cntl );
+    }
 
     /*  GET SIZE OF DATA TYPE */  
     MPI_Type_size(c_info->s_data_type,&s_size);
@@ -175,7 +223,7 @@ Output variables:
 				 (char*)c_info->r_buffer+i%ITERATIONS->r_cache_iter*ITERATIONS->r_offs,
 				 c_info->reccnt,c_info->rdispl,
 				 r_data_types,
-				  c_info->communicator, 0, 0, c_info->num_procs);
+				  c_info->communicator, handshake, isend, flow_cntl);
 	    MPI_ERRHAND(ierr);
 
 	    CHK_DIFF("Alltoallw",c_info, (char*)c_info->r_buffer+i%ITERATIONS->r_cache_iter*ITERATIONS->r_offs,
