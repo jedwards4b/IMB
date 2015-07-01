@@ -76,15 +76,17 @@ char *DEFC[] = {
   ,"Allgather" 
   ,"Allgatherv" 
   ,"Gather" 
-  ,"spmd_Gather" 
   ,"Gatherv" 
-  ,"spmd_Gatherv" 
   ,"Scatter" 
   ,"Scatterv" 
   ,"Alltoall"
   ,"Alltoallv"
   ,"Bcast" 
   ,"Barrier" 
+  ,"Alltoallw"
+  ,"spmd_Gather" 
+  ,"spmd_Gatherv" 
+  ,"spmd_swapm" 
 };
 
 /* NAMES OF BENCHMARKS (ALL CASE)*/
@@ -101,14 +103,16 @@ char *ALLC[] = {
   ,"Allgather" 
   ,"Allgatherv" 
   ,"Gather" 
-  ,"spmd_Gather" 
   ,"Gatherv" 
-  ,"spmd_Gatherv" 
   ,"Scatter" 
   ,"Scatterv" 
   ,"Alltoall"
   ,"Alltoallv"
   ,"Bcast" 
   ,"Barrier" 
+  ,"Alltoallw"
+  ,"spmd_Gather" 
+  ,"spmd_Gatherv" 
+  ,"spmd_swapm" 
 };
 

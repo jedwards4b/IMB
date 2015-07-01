@@ -284,24 +284,10 @@ In/out variables:
 	type = Collective;
 	Bmark->bench_comments = &Gather_cmt[0];
     }
-    else if (!strcmp(Bmark->name,"spmd_gather"))
-    { 
-	strcpy(Bmark->name,"spmd_Gather");
-	Bmark->Benchmark = IMB_shr_spmd_gather;
-	type = Collective;
-	Bmark->bench_comments = &Gather_cmt[0];
-    }
     else if (!strcmp(Bmark->name,"gatherv"))
     { 
 	strcpy(Bmark->name,"Gatherv");
 	Bmark->Benchmark = IMB_gatherv;
-	type = Collective;
-	Bmark->bench_comments = &Gatherv_cmt[0];
-    }
-    else if (!strcmp(Bmark->name,"spmd_gatherv"))
-    { 
-	strcpy(Bmark->name,"spmd_Gatherv");
-	Bmark->Benchmark = IMB_shr_spmd_gatherv;
 	type = Collective;
 	Bmark->bench_comments = &Gatherv_cmt[0];
     }
@@ -330,6 +316,34 @@ In/out variables:
     { 
 	strcpy(Bmark->name,"Alltoallv");
 	Bmark->Benchmark = IMB_alltoallv;
+	type = Collective;
+	Bmark->bench_comments = &Alltoallv_cmt[0];
+    }
+    else if (!strcmp(Bmark->name,"alltoallw"))
+    { 
+	strcpy(Bmark->name,"Alltoallw");
+	Bmark->Benchmark = IMB_alltoallw;
+	type = Collective;
+	Bmark->bench_comments = &Alltoallv_cmt[0];
+    }
+    else if (!strcmp(Bmark->name,"spmd_gather"))
+    { 
+	strcpy(Bmark->name,"spmd_Gather");
+	Bmark->Benchmark = IMB_shr_spmd_gather;
+	type = Collective;
+	Bmark->bench_comments = &Gather_cmt[0];
+    }
+    else if (!strcmp(Bmark->name,"spmd_gatherv"))
+    { 
+	strcpy(Bmark->name,"spmd_Gatherv");
+	Bmark->Benchmark = IMB_shr_spmd_gatherv;
+	type = Collective;
+	Bmark->bench_comments = &Gatherv_cmt[0];
+    }
+    else if (!strcmp(Bmark->name,"spmd_swapm"))
+    { 
+	strcpy(Bmark->name,"spmd_swapm");
+	Bmark->Benchmark = IMB_shr_spmd_swapm;
 	type = Collective;
 	Bmark->bench_comments = &Alltoallv_cmt[0];
     }

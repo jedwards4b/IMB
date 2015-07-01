@@ -246,14 +246,15 @@ int shr_spmd_create_comm_datatypes_finterface(const int comm, const int maplen, 
 			      const int recvtask, const int basetype, 
 			      int *sendtype, int *recvtype)
 {
-  MPI_Datatype *csendtype, *crecvtype;
+  MPI_Datatype csendtype, crecvtype;
   int ierr;
-  *csendtype = MPI_Type_f2c(*sendtype);
-  *crecvtype = MPI_Type_f2c(*recvtype);
-
 
   ierr = shr_spmd_create_comm_datatypes(MPI_Comm_f2c(comm), maplen, map, recvtask, 
-					MPI_Type_f2c(basetype), csendtype, crecvtype);
+					MPI_Type_f2c(basetype), &csendtype, &crecvtype);
+
+  *sendtype = MPI_Type_c2f(csendtype);
+  *recvtype = MPI_Type_c2f(crecvtype);
+
   return(ierr);
   
 }

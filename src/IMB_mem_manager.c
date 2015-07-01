@@ -673,6 +673,8 @@ In/out variables:
     if (
 #ifdef MPI1
        !strcmp(Bmark->name,"Alltoall") || !strcmp(Bmark->name,"Alltoallv")
+        || !strcmp(Bmark->name,"Alltoallw") || !strcmp(Bmark->name,"spmd_swapm")
+
 #elif defined NBC // MPI1
           !strcmp(Bmark->name, "Ialltoall")  || !strcmp(Bmark->name, "Ialltoall_pure")
        || !strcmp(Bmark->name, "Ialltoallv") || !strcmp(Bmark->name, "Ialltoallv_pure")
@@ -747,6 +749,8 @@ In/out variables:
     if (
 #ifdef MPI1
         !strcmp(Bmark->name,"Alltoallv")  ||
+        !strcmp(Bmark->name,"Alltoallw")  ||
+        !strcmp(Bmark->name,"spmd_swapm")  ||
         !strcmp(Bmark->name,"Allgatherv") ||
         !strcmp(Bmark->name,"Scatterv")   ||
         !strcmp(Bmark->name,"Gatherv")
