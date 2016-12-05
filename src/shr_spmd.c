@@ -4,7 +4,7 @@
 /// @date 2014
 /// @brief MPI_Gather, MPI_Gatherv, and MPI_Alltoallw with flow control options
 ///
-/// 
+///
 
 #include "shr_spmd.h"
 
@@ -19,47 +19,47 @@ typedef struct mapsort
   MPI_Offset gmap;
 } mapsort;
 
-/// 
+///
 /// Wrapper for MPI calls to print the Error string on error
-/// 
+///
 void shr_spmd_CheckMPIReturn(const int ierr,const char file[],const int line)
 {
-  
+
   if(ierr != MPI_SUCCESS){
     char errstring[MPI_MAX_ERROR_STRING];
     int errstrlen;
     int mpierr = MPI_Error_string( ierr, errstring, &errstrlen);
 
     fprintf(stderr, "MPI ERROR: %s in file %s at line %d\n",errstring, file, line);
-    
+
   }
 }
 
-/** 
+/**
  ** @internal
  ** compare offsets is used by the sort in the shr_create_comm_datatypes
  ** @endinternal
  */
-int compare_offsets(const void *a,const void *b) 
+int compare_offsets(const void *a,const void *b)
 {
   mapsort *x = (mapsort *) a;
   mapsort *y = (mapsort *) b;
   return (int) (x->gmap - y->gmap);
-}    
+}
 
 
 ///
 ///   Given a map on one or more of the tasks in comm, send the size of the map
 ///   to the recvtask and compute the total size on recvtask (llen)
-///   map is a list of non-negative integers and the value of the integer indicates it's 
-///   position in the resulting array on recvtask, a value of 0 in map indicates a point 
+///   map is a list of non-negative integers and the value of the integer indicates it's
+///   position in the resulting array on recvtask, a value of 0 in map indicates a point
 ///   which is not sent.
 ///
 int shr_spmd_get_gather_size(const MPI_Comm comm, const int maplen, MPI_Offset map[],
 			     const int recvtask, int *scount,int *rcount, int *llen )
 {
   int rank, ntasks;
-  int i, j, rcnt;  
+  int i, j, rcnt;
 
   MPI_Comm_rank(comm, &rank);
   MPI_Comm_size(comm, &ntasks);
@@ -78,8 +78,8 @@ int shr_spmd_get_gather_size(const MPI_Comm comm, const int maplen, MPI_Offset m
     rcnt = 0;
   }
 
-  shr_spmd_gather(&scount, 1, MPI_INT, 
-		rcount, rcnt, MPI_INT, 
+  shr_spmd_gather(&scount, 1, MPI_INT,
+		rcount, rcnt, MPI_INT,
 		recvtask, comm, maxreq);
 
   *llen = 0;
@@ -96,7 +96,7 @@ int shr_spmd_get_gather_size(const MPI_Comm comm, const int maplen, MPI_Offset m
 ///  shr_create_comm_datatypes  Set up datatypes for a many to one or one to many communication
 ///
 int shr_spmd_create_comm_datatypes(const MPI_Comm comm, const int maplen, MPI_Offset map[],
-			      const int recvtask, MPI_Datatype basetype, 
+			      const int recvtask, MPI_Datatype basetype,
 			      MPI_Datatype *sendtype, MPI_Datatype *recvtype)
 {
   int rank, ntasks;
@@ -148,9 +148,9 @@ int shr_spmd_create_comm_datatypes(const MPI_Comm comm, const int maplen, MPI_Of
       rdispls[i]=0;
     }
   }
-      
-  shr_spmd_gatherv(sindex, scount, MPI_OFFSET, 
-		 srcindex, recvlths, rdispls, MPI_OFFSET, 
+
+  shr_spmd_gatherv(sindex, scount, MPI_OFFSET,
+		 srcindex, recvlths, rdispls, MPI_OFFSET,
 		 recvtask, comm, maxreq);
 
 
@@ -170,9 +170,9 @@ int shr_spmd_create_comm_datatypes(const MPI_Comm comm, const int maplen, MPI_Of
   }else{
     shrtmap = map;
   }
-  
+
   shr_spmd_gatherv((void *) shrtmap, scount, MPI_OFFSET,
-		 (void *) gmap, recvlths, rdispls, MPI_OFFSET,  
+		 (void *) gmap, recvlths, rdispls, MPI_OFFSET,
 		 recvtask, comm, maxreq);
 
 
@@ -194,8 +194,8 @@ int shr_spmd_create_comm_datatypes(const MPI_Comm comm, const int maplen, MPI_Of
       }
       pos += rcount[i];
     }
-    // sort the mapping, this will transpose the data into IO order        
-    qsort(remap, llen, sizeof(mapsort), compare_offsets); 
+    // sort the mapping, this will transpose the data into IO order
+    qsort(remap, llen, sizeof(mapsort), compare_offsets);
 
     rindex = (MPI_Offset *) malloc(llen*sizeof(MPI_Offset));
     /* add error check */
@@ -228,9 +228,9 @@ int shr_spmd_create_comm_datatypes(const MPI_Comm comm, const int maplen, MPI_Of
     rindex[i]=i;
     gmap[i] = mptr->gmap;
     srcindex[ (cnt[rfrom[i]])++   ]=mptr->soffset;
-  }  
+  }
 
-  shr_spmd_CheckMPIReturn(MPI_Scatterv((void *) srcindex, recvlths, rdispls, MPI_OFFSET, 
+  shr_spmd_CheckMPIReturn(MPI_Scatterv((void *) srcindex, recvlths, rdispls, MPI_OFFSET,
 			      (void *) sindex, scount,  MPI_OFFSET,
 			      recvtask, comm),__FILE__,__LINE__);
 
@@ -243,20 +243,20 @@ int shr_spmd_create_comm_datatypes(const MPI_Comm comm, const int maplen, MPI_Of
 }
 
 int shr_spmd_create_comm_datatypes_finterface(const int comm, const int maplen, MPI_Offset map[],
-			      const int recvtask, const int basetype, 
+			      const int recvtask, const int basetype,
 			      int *sendtype, int *recvtype)
 {
   MPI_Datatype csendtype, crecvtype;
   int ierr;
 
-  ierr = shr_spmd_create_comm_datatypes(MPI_Comm_f2c(comm), maplen, map, recvtask, 
+  ierr = shr_spmd_create_comm_datatypes(MPI_Comm_f2c(comm), maplen, map, recvtask,
 					MPI_Type_f2c(basetype), &csendtype, &crecvtype);
 
   *sendtype = MPI_Type_c2f(csendtype);
   *recvtype = MPI_Type_c2f(crecvtype);
 
   return(ierr);
-  
+
 }
 
 
@@ -266,7 +266,7 @@ int shr_spmd_create_comm_datatypes_finterface(const int comm, const int maplen, 
 ///
 
 int shr_spmd_gather( void *sendbuf, const int sendcnt, const MPI_Datatype sendtype,
-		   void *recvbuf, const int recvcnt, const MPI_Datatype recvtype, const int root, 
+		   void *recvbuf, const int recvcnt, const MPI_Datatype recvtype, const int root,
 		   const MPI_Comm comm, const int flow_cntl)
 {
 
@@ -278,7 +278,7 @@ int shr_spmd_gather( void *sendbuf, const int sendcnt, const MPI_Datatype sendty
   int hs;
   int displs;
   int dsize;
-  
+
   if(flow_cntl > 0){
 
     gather_block_size = min(flow_cntl,MAX_GATHER_BLOCK_SIZE);
@@ -319,7 +319,7 @@ int shr_spmd_gather( void *sendbuf, const int sendcnt, const MPI_Datatype sendty
       }
 
       // copy local data
-      shr_spmd_CheckMPIReturn(MPI_Type_size(sendtype, &dsize), __FILE__,__LINE__);      
+      shr_spmd_CheckMPIReturn(MPI_Type_size(sendtype, &dsize), __FILE__,__LINE__);
       memcpy(recvbuf, sendbuf, sendcnt*dsize );
 
       count = min(count, preposts);
@@ -346,7 +346,7 @@ int shr_spmd_gather( void *sendbuf, const int sendcnt, const MPI_Datatype sendty
 ///
 
 int shr_spmd_gather_finterface( void *sendbuf, const int sendcnt, const int fsendtype,
-		   void *recvbuf, const int recvcnt, const int frecvtype, const int root, 
+		   void *recvbuf, const int recvcnt, const int frecvtype, const int root,
 		   const int fcomm, int *flow_cntl)
 {
   int flowcntl;
@@ -362,12 +362,12 @@ int shr_spmd_gather_finterface( void *sendbuf, const int sendcnt, const int fsen
     flowcntl = *flow_cntl;
   }
   //  printf("line %d flowcntl=%d %x %x\n",__LINE__,flowcntl, sendbuf, recvbuf);
-  ierr = shr_spmd_gather(sendbuf, sendcnt, sendtype, 
+  ierr = shr_spmd_gather(sendbuf, sendcnt, sendtype,
 			 recvbuf, recvcnt, recvtype, root, MPI_Comm_f2c(fcomm), flowcntl);
 
 }
 
-  
+
 
 
 ///
@@ -377,7 +377,7 @@ int shr_spmd_gather_finterface( void *sendbuf, const int sendcnt, const int fsen
 
 int shr_spmd_gatherv(void *sendbuf, int sendcnt,  MPI_Datatype sendtype,
 		    void *recvbuf,  int recvcnts[], int displs[],
-		    MPI_Datatype recvtype, int root, 
+		    MPI_Datatype recvtype, int root,
 		    MPI_Comm comm, const int flow_cntl)
 {
   bool fc_gather;
@@ -388,7 +388,7 @@ int shr_spmd_gatherv(void *sendbuf, int sendcnt,  MPI_Datatype sendtype,
   int ierr;
   int hs;
   int dsize;
-  
+
 
   if(flow_cntl > 0){
     fc_gather = true;
@@ -434,7 +434,7 @@ int shr_spmd_gatherv(void *sendbuf, int sendcnt,  MPI_Datatype sendtype,
       }
 
       // copy local data
-      shr_spmd_CheckMPIReturn(MPI_Type_size(sendtype, &dsize), __FILE__,__LINE__);      
+      shr_spmd_CheckMPIReturn(MPI_Type_size(sendtype, &dsize), __FILE__,__LINE__);
       shr_spmd_CheckMPIReturn(MPI_Sendrecv(sendbuf, sendcnt, sendtype,
 				  mytask, 102, recvbuf, recvcnts[mytask], recvtype,
 				  mytask, 102, comm, &status),__FILE__,__LINE__);
@@ -461,12 +461,12 @@ int shr_spmd_gatherv(void *sendbuf, int sendcnt,  MPI_Datatype sendtype,
 ///
 
 int shr_spmd_gatherv_finterface(void *sendbuf, int sendcnt, const int fsendtype,
-			       void *recvbuf, int recvcnts[],  int displs[], 
+			       void *recvbuf, int recvcnts[],  int displs[],
 			       const int frecvtype, int root, const int fcomm, const int flow_cntl)
 {
 
-  return(shr_spmd_gatherv(sendbuf, sendcnt, MPI_Type_f2c(fsendtype), 
-			recvbuf, recvcnts, displs, MPI_Type_f2c(frecvtype), root, 
+  return(shr_spmd_gatherv(sendbuf, sendcnt, MPI_Type_f2c(fsendtype),
+			recvbuf, recvcnts, displs, MPI_Type_f2c(frecvtype), root,
 			MPI_Comm_f2c(fcomm), flow_cntl));
 
 }
@@ -477,7 +477,7 @@ int shr_spmd_gatherv_finterface(void *sendbuf, int sendcnt, const int fsendtype,
 
 ///
 ///  Returns the smallest power of 2 greater than i
-///  
+///
 int ceil2(const int i)
 {
   int p=1;
@@ -488,8 +488,8 @@ int ceil2(const int i)
 }
 
 ///
-///  Given integers p and k between 0 and np-1  
-///  
+///  Given integers p and k between 0 and np-1
+///
 int pair(const int np, const int p, const int k)
 {
   int q = (p+1) ^ k ;
@@ -502,8 +502,8 @@ int pair(const int np, const int p, const int k)
 ///  shr_spmd_swapm provides the functionality of MPI_Alltoallw with flow control options
 ///
 
-int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype stypes[], 
-	      void *rcvbuf,  int rcvlths[],  int rdispls[],  MPI_Datatype rtypes[], 
+int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype stypes[],
+	      void *rcvbuf,  int rcvlths[],  int rdispls[],  MPI_Datatype rtypes[],
 	       MPI_Comm comm,const  bool handshake, bool isend,const  int max_requests)
 {
 
@@ -599,7 +599,7 @@ int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype s
   if(handshake)
     for( i=0;i<nprocs;i++)
       hs_rcvids[i]=MPI_REQUEST_NULL;
-  
+
   steps = 0;
   for(istep=0;istep<ceil2(nprocs)-1;istep++){
     p = pair(nprocs, istep, mytask) ;
@@ -622,7 +622,7 @@ int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype s
       maxreq = 2;
       maxreqh = 1;
     }
-  } 
+  }
   if(handshake){
     hs = 1;
     for(istep=0; istep<maxreq; istep++){
@@ -679,7 +679,7 @@ int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype s
 	}
 	if(rcvlths[p] > 0){
 	  tag = p + offset_t;
-	  
+
 	  ptr = (void *)((char *) rcvbuf + rdispls[p]);
 	  shr_spmd_CheckMPIReturn(MPI_Irecv( ptr, rcvlths[p], rtypes[p], p, tag, comm, rcvids+rstep), __FILE__,__LINE__);
 	  if(handshake)
@@ -691,12 +691,12 @@ int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype s
   }
   //     printf("%s %d %d \n",__FILE__,__LINE__,nprocs);
   if(steps>0){
-    shr_spmd_CheckMPIReturn(MPI_Waitall(steps, rcvids, MPI_STATUSES_IGNORE), __FILE__,__LINE__);
+      shr_spmd_CheckMPIReturn(MPI_Waitall(steps, rcvids, MPI_STATUSES_IGNORE), __FILE__,__LINE__);
     if(isend)
       shr_spmd_CheckMPIReturn(MPI_Waitall(steps, sndids, MPI_STATUSES_IGNORE), __FILE__,__LINE__);
   }
   //      printf("%s %d %d \n",__FILE__,__LINE__,nprocs);
-  
+
   return SHR_NOERR;
 }
 
@@ -706,7 +706,7 @@ int shr_spmd_swapm(void *sndbuf,   int sndlths[], int sdispls[],  MPI_Datatype s
 ///
 
 int shr_spmd_swapm_finterface( void *sendbuf, int sendcnts[],  int sdispls[], int fsendtypes[],
-			  void *recvbuf, int recvcnts[],  int rdispls[], 
+			  void *recvbuf, int recvcnts[],  int rdispls[],
 			  int frecvtypes[], const int fcomm, const int handshake,
 			  const int isend, const int max_reqs)
 {
@@ -733,8 +733,3 @@ int shr_spmd_swapm_finterface( void *sendbuf, int sendcnts[],  int sdispls[], in
   free(recvtypes);
   return(ierr);
 }
-
-
-
-
-
