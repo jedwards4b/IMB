@@ -175,16 +175,16 @@ Output variables:
     ierr = 0;
 
     if(firstpass){
-      firstpass = false;
       shr_swapm_getenv(&handshake, &isend, &maxreqs);
+      firstpass = false;
+      if(c_info->rank==0){
+	printf("SPMD_SWAPM: maxreqs %d handshake %d isend %d\n",maxreqs,handshake, isend);
+      }
     }
     if(maxreqs >= 0){
       flow_cntl = min(c_info->num_procs, maxreqs);
     }else{
       flow_cntl = max(2,-1* c_info->num_procs/maxreqs);
-    }
-    if(c_info->rank==0){
-      printf("SPMD_SWAPM: handshake %d isend %d flow_cntl = %d\n",handshake, isend,flow_cntl );
     }
 
     /*  GET SIZE OF DATA TYPE */  
